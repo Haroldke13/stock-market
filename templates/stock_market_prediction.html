@@ -4,68 +4,124 @@
 
 {% block body %}
 <div class="container my-5 overlay-text">
-    <h1 class="mb-4">Stock Market Prediction</h1>
+    <!-- Page Heading -->
+    <h3 class="text-center mb-5 display-4 font-weight-bold">Stock Market Prediction</h3>
 
     <!-- Stock Input Form -->
-    <form method="POST" action="/stock_market_prediction" enctype="multipart/form-data" class="mb-4">
-        <div class="form-group">
-            <label for="file">Upload a CSV File of the stock ticker symbol e.g GOOG.csv:</label>
-            <input type="file" id="file" name="file" class="form-control-file">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg p-4">
+                <h4 class="card-title text-center mb-4">Upload a CSV File for Analysis</h4>
+                <form method="POST" action="/stock_market_prediction" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file" class="font-weight-bold">Upload your CSV file (e.g., GOOG.csv):</label>
+                        <input type="file" id="file" name="file" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Predict</button>
+                </form>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Predict</button>
-    </form>
+    </div>
+
+    <!-- Available CSV Files for Analysis -->
+    <div class="mt-5 text-center">
+        <h3 class="mb-4">Available CSV Files for Analysis</h3>
+        <div class="list-group">
+            {% for csv_file in csv_files %}
+            <a href="/analyze_data?csv_filename={{ csv_file }}" class="list-group-item list-group-item-action hover-effect">
+                {{ csv_file }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
 
     <!-- Error Message -->
     {% if error %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
+    <div class="alert alert-danger mt-4" role="alert">
+        <strong>Error:</strong> {{ error }}
     </div>
     {% endif %}
 
     <!-- Trend Result -->
     {% if trend %}
-    <h3 class="mt-5">Trend: {{ trend }}</h3>
-    {% endif %}
-
-    
-    <!-- Prediction Results Table -->
-    {% if results %}
-    <h2 class="mt-5">Prediction Results for {{ stock_symbol }} (Uploaded File)</h2>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover text-white"> <!-- Add text-white class here -->
-            <thead class="thead-dark">
-                <tr>
-                    {% for col in columns %}
-                    <th>{{ col }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in results %}
-                <tr>
-                    {% for col in columns %}
-                    <td>{{ row[col] }}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="mt-4 text-center">
+        <h3 class="font-weight-bold">Trend: <span class="text-info">{{ trend }}</span></h3>
     </div>
     {% endif %}
-    
+
+    <!-- Prediction Results Table -->
+    {% if results %}
+    <div class="mt-5">
+        <h3 class="text-center mb-4">Prediction Results for {{ stock_symbol }} (Uploaded File)</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-white">
+                <thead class="thead-dark">
+                    <tr>
+                        {% for col in columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                    <tr>
+                        {% for col in columns %}
+                        <td>{{ row[col] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Display Prediction Graph -->
     {% if graph_json %}
     <div id="stock-chart" class="mt-5">
-        <div id="graph" class="plotly-graph-div"></div> <!-- Graph placeholder -->
-        <!-- Ensure Plotly is included -->
+        <div id="graph" class="plotly-graph-div"></div>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script>
-            // Render Plotly graph with the passed JSON data
-            var graphs = {{ graph_json | safe }};  // Inject the Plotly graph JSON
-            Plotly.newPlot('graph', graphs.data, graphs.layout);  // Render graph in the 'graph' div
+            var graphs = {{ graph_json | safe }};
+            Plotly.newPlot('graph', graphs.data, graphs.layout);
         </script>
     </div>
     {% endif %}
-
 </div>
+
+<!-- Custom CSS for hover effects and typography -->
+<style>
+    .hover-effect:hover {
+        background-color: #007bff !important;
+        color: white;
+    }
+    .card {
+        border-radius: 15px;
+    }
+    .card-title {
+        color: #333;
+        font-size: 1.5rem;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        padding: 10px 15px;
+        font-size: 1.1rem;
+        border-radius: 5px;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f0f0f0;
+    }
+    .table th, .table td {
+        text-align: center;
+    }
+    .overlay-text::before {
+        background: rgba(0, 0, 0, 0.3) !important;
+    }
+</style>
 
 {% endblock %}
