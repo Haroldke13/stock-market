@@ -46,9 +46,10 @@
         </table>
     </div>
     <form action="/stock_market" method="POST">
-        <input type="hidden" name="stock_symbol" value="{{ stock_symbol }}">
-        <button type="submit" class="btn btn-success mt-4">Predict Stock Price</button>
+    <input type="hidden" name="stock_symbol" value="{{ stock_symbol }}">
+    <button type="submit" class="btn btn-success mt-4">Predict Stock Price</button>
     </form>
+
     {% endif %}
 </div>
 
@@ -59,9 +60,3 @@
 
 {% endblock %}
 
-<script>
-    // Function to scroll to the bottom of the page
-    function scrollToBottom() {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-</script>
