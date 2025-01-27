@@ -6,57 +6,48 @@
 <div class="container my-5">
     <h1 class="mb-4">Stock Data Analysis</h1>
 
-    <!-- Stock Input Form -->
-    <form method="POST" action="/yfinance" class="mb-4">
-        <div class="form-group">
-            <label for="stock">Enter Stock Symbol:</label>
-            <input type="text" id="stock" name="stock" class="form-control" placeholder="e.g. AAPL, TSLA, GOOG" required>
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">Fetch Data</button>
+    
+    <h1>Stock Data</h1>
+    
+    <form method="POST">
+        <label for="stock">Enter Stock Symbol:</label>
+        <input type="text" id="stock" name="stock" required>
+        <button type="submit">Fetch Data</button>
     </form>
+    
 
-    <!-- Error Message -->
     {% if error %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
+        <p style="color: red;">{{ error }}</p>
     {% endif %}
-
-    <!-- Stock Data Table -->
+    
+    {% if message %}
+        <p style="color: white;">{{ message }}</p>
+    {% endif %}
+    
     {% if stock_data %}
-    <h2 class="mt-5">Stock Data for {{ stock_symbol }}</h2>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead class="thead-dark">
+        <h2>Stock Data for {{ stock_symbol }}</h2>
+        <table border="1">
+            <thead>
                 <tr>
-                    {% for col in columns %}
-                    <th>{{ col }}</th>
+                    {% for column in columns %}
+                        <th>{{ column }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 {% for row in stock_data %}
-                <tr>
-                    {% for col in columns %}
-                    <td>{{ row[col] }}</td>
-                    {% endfor %}
-                </tr>
+                    <tr>
+                        {% for column in columns %}
+                            <td>{{ row[column] }}</td>
+                        {% endfor %}
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-    <form action="/stock_market" method="POST">
-    <input type="hidden" name="stock_symbol" value="{{ stock_symbol }}">
-    <button type="submit" class="btn btn-success mt-4">Predict Stock Price</button>
-    </form>
-
     {% endif %}
-</div>
 
-<!-- Button to Scroll to Bottom -->
-<button id="scrollButton" class="btn btn-info fixed-bottom mb-3" onclick="scrollToBottom()">
-    Go to Bottom
-</button>
+    </div>
+    
+ 
 
 {% endblock %}
-
