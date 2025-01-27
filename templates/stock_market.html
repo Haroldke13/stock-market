@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock Market Prediction{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1>Stock Market Prediction</h1>
+
+    <!-- Prediction Report -->
+    {% if report %}
+    <div class="card my-4">
+        <div class="card-body">
+            <h3>Prediction Report for {{ report.symbol }}</h3>
+            <p><strong>Latest Price:</strong> ${{ report.latest_price }}</p>
+            <p><strong>Predicted Next Price:</strong> ${{ report.predicted_next_price }}</p>
+            <p><strong>Model Accuracy:</strong> {{ report.accuracy | round(2) }}%</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Prediction Graph -->
+    {% if img_data %}
+    <h3>Prediction Graph</h3>
+    <img src="data:image/png;base64,{{ img_data }}" class="img-fluid" alt="Prediction Graph">
+    {% endif %}
+</div>
+{% endblock %}

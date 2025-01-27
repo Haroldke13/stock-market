@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>{% block title %}Flask Stock App{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Flask Stock App</a>
+        <a class="navbar-brand" href="/yfinance">Upload Data</a>
+
+    </nav>
+    {% block body %}{% endblock %}
+    <footer class="footer bg-dark text-light py-3">
+        <div class="container text-center">
+            &copy; 2025 Joel Onyango - All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>
