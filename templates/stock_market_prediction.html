@@ -52,18 +52,20 @@
         </table>
     </div>
     {% endif %}
-
-
-    <!-- Plotly Graph -->
+    
     {% if graph_json %}
     <div id="stock-chart" class="mt-5">
-        <div id="graph" class="plotly-graph-div"></div>
+        <div id="graph" class="plotly-graph-div"></div> <!-- Graph placeholder -->
+        <!-- Ensure Plotly is included -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script>
-            var graphs = {{ graph_json | safe }};
-            Plotly.newPlot('graph', graphs.data, graphs.layout);
+            // Render Plotly graph with the passed JSON data
+            var graphs = {{ graph_json | safe }};  // Inject the Plotly graph JSON
+            Plotly.newPlot('graph', graphs.data, graphs.layout);  // Render graph in the 'graph' div
         </script>
     </div>
     {% endif %}
+
 </div>
 
 {% endblock %}
