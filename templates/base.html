@@ -13,6 +13,8 @@
             background-attachment: fixed; /* Make the background fixed while scrolling */
             min-height: 100vh; /* Ensure the background covers the full screen height */
             color: white; /* Change text color to white for better visibility */
+            margin: 0;
+            padding: 0;
         }
 
         /* Apply overlay just around the text */
@@ -32,9 +34,24 @@
             z-index: -1; /* Ensure the overlay is behind the text */
         }
 
-        /* Optional: Adjust navbar text color if needed */
+        /* Ensure navbar is responsive */
+        .navbar-nav {
+            flex-direction: row;
+        }
+
+        .navbar-nav .nav-link {
+            padding-right: 15px; /* Space between nav items */
+        }
+
         .navbar-dark .navbar-brand {
             color: white !important; /* Ensure navbar text is visible */
+        }
+
+        /* Make footer text smaller on mobile */
+        @media (max-width: 767px) {
+            .footer {
+                font-size: 12px;
+            }
         }
     </style>
     <title>{% block title %}Flask Stock App{% endblock %}</title>
