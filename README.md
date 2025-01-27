@@ -22,12 +22,12 @@ This is a Flask-based web application that predicts stock market data by importi
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/stock-market-prediction-app.git
+    git clone https://github.com/yourusername/stock-market.git
     ```
 
 2. Navigate to the project directory:
     ```bash
-    cd stock-market-prediction-app
+    cd stock-market
     ```
 
 3. Install the required dependencies:
