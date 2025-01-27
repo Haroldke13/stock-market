@@ -1,69 +1,53 @@
 {% extends 'base.html' %}
 
-{% block title %}Stock Market Prediction{% endblock %}
+{% block title %}Stock Data Analysis{% endblock %}
 
 {% block body %}
-<div class="container my-5 overlay-text">
-    <h1 class="mb-4">Stock Market Prediction</h1>
-
-    <!-- Stock Input Form -->
-    <form method="POST" action="/stock_market_prediction" enctype="multipart/form-data" class="mb-4">
-        <div class="form-group">
-            <label for="file">Upload a CSV File of the stock ticker symbol e.g GOOG.csv:</label>
-            <input type="file" id="file" name="file" class="form-control-file">
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">Predict</button>
-    </form>
-
-    <!-- Error Message -->
-    {% if error %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endif %}
-
-    <!-- Trend Result -->
-    {% if trend %}
-    <h3 class="mt-5">Trend: {{ trend }}</h3>
-    {% endif %}
+<div class="container my-5">
+    <h1 class="mb-4">Stock Data Analysis</h1>
 
     
-    <!-- Prediction Results Table -->
-    {% if results %}
-    <h2 class="mt-5">Prediction Results for {{ stock_symbol }} (Uploaded File)</h2>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover text-white"> <!-- Add text-white class here -->
-            <thead class="thead-dark">
+    <h1>Stock Data</h1>
+    
+    <form method="POST">
+        <label for="stock">Enter Stock Symbol:</label>
+        <input type="text" id="stock" name="stock" required>
+        <button type="submit">Fetch Data</button>
+    </form>
+    
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    
+    {% if message %}
+        <p style="color: white;">{{ message }}</p>
+    {% endif %}
+    
+    {% if stock_data %}
+        <h2>Stock Data for {{ stock_symbol }}</h2>
+        <table border="1">
+            <thead>
                 <tr>
-                    {% for col in columns %}
-                    <th>{{ col }}</th>
+                    {% for column in columns %}
+                        <th>{{ column }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
-                {% for row in results %}
-                <tr>
-                    {% for col in columns %}
-                    <td>{{ row[col] }}</td>
-                    {% endfor %}
-                </tr>
+                {% for row in stock_data %}
+                    <tr>
+                        {% for column in columns %}
+                            <td>{{ row[column] }}</td>
+                        {% endfor %}
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
     {% endif %}
 
-
-    <!-- Plotly Graph -->
-    {% if graph_json %}
-    <div id="stock-chart" class="mt-5">
-        <div id="graph" class="plotly-graph-div"></div>
-        <script>
-            var graphs = {{ graph_json | safe }};
-            Plotly.newPlot('graph', graphs.data, graphs.layout);
-        </script>
     </div>
-    {% endif %}
-</div>
+    
+ 
 
 {% endblock %}
