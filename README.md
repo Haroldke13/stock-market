@@ -47,4 +47,26 @@ This is a Flask-based web application that predicts stock market data by importi
 - Click "Predict" to receive stock market predictions.
 - View the prediction results in a table format and graphical representation.
 
+
 ## File Structure:
+/static /images # Image assets for the website
+/templates base.html # Base HTML template home.html # Home page template prediction.html 
+# Prediction results page template /app.py 
+# Flask app entry point /requirements.txt 
+# List of Python dependencies README.md 
+# Project description LICENSE 
+# License for the project
+
+
+markdown
+Copy
+
+## License:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing:
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature-name`).
+3. Commit your changes (`git commit -am 'Add feature'`).
+4. Push to the branch (`git push origin feature-name`).
+5. Create a new Pull Request.
