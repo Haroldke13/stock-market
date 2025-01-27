@@ -4,15 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Add background image styling */
+        body {
+            background-image: url('static/images/images.jpg'); /* Replace with your image path */
+            background-size: cover; /* Ensure the image covers the whole page */
+            background-position: center; /* Center the image */
+            background-attachment: fixed; /* Make the background fixed while scrolling */
+            min-height: 100vh; /* Ensure the background covers the full screen height */
+            color: white; /* Change text color to white for better visibility */
+        }
+
+        /* Apply overlay just around the text */
+        .overlay-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .overlay-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+            z-index: -1; /* Ensure the overlay is behind the text */
+        }
+
+        /* Optional: Adjust navbar text color if needed */
+        .navbar-dark .navbar-brand {
+            color: white !important; /* Ensure navbar text is visible */
+        }
+    </style>
     <title>{% block title %}Flask Stock App{% endblock %}</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="/">Flask Stock App</a>
         <a class="navbar-brand" href="/yfinance">Upload Data</a>
-
+        <a class="navbar-brand" href="/stock_market_prediction">Stock Market Prediction</a>
     </nav>
-    {% block body %}{% endblock %}
+
+    <div class="container overlay-text">
+        {% block body %}{% endblock %}
+    </div>
+
     <footer class="footer bg-dark text-light py-3">
         <div class="container text-center">
             &copy; 2025 Joel Onyango - All Rights Reserved.
