@@ -5,8 +5,7 @@
 {% block body %}
 <div class="container my-5">
     <h1>Stock Market Prediction</h1>
-
-    <!-- Prediction Report -->
+    
     {% if report %}
     <div class="card my-4">
         <div class="card-body">
@@ -16,12 +15,15 @@
             <p><strong>Model Accuracy:</strong> {{ report.accuracy | round(2) }}%</p>
         </div>
     </div>
+    {% else %}
+    <p>No prediction data available. Please submit a stock symbol to generate a report.</p>
     {% endif %}
 
-    <!-- Prediction Graph -->
     {% if img_data %}
     <h3>Prediction Graph</h3>
     <img src="data:image/png;base64,{{ img_data }}" class="img-fluid" alt="Prediction Graph">
+    {% else %}
+    <p>No graph available. Please submit a stock symbol to generate a graph.</p>
     {% endif %}
 </div>
 {% endblock %}
