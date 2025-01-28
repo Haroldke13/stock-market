@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Background image styling */
+        body {
+            background-image: url('static/images/dgsdfdfs.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .overlay-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .overlay-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        /* Navbar styling */
+        .navbar-nav {
+            flex-direction: row;
+        }
+
+        .navbar-nav .nav-link {
+            padding-right: 15px;
+        }
+
+        .navbar-dark .navbar-brand {
+            color: white !important;
+        }
+
+        /* Active link color change */
+        .nav-item.active .nav-link {
+            color: #ffc107 !important; /* Change to a color of your choice */
+        }
+
+        /* Hamburger icon alignment */
+        .navbar-toggler {
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        
+
+        /* Make footer text smaller on mobile */
+        @media (max-width: 767px) {
+            .footer {
+                font-size: 12px;
+            }
+        }
+
+        /* Footer styling */
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+    </style>
+    <title>{% block title %}Flask Stock App{% endblock %}</title>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Flask Stock App</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item {% if request.path == '/yfinance' %}active{% endif %}">
+                    <a class="nav-link" href="/yfinance">Upload Data</a>
+                </li>
+                <li class="nav-item {% if request.path == '/stock_market_prediction' %}active{% endif %}">
+                    <a class="nav-link" href="/stock_market_prediction">Stock Market Prediction</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container overlay-text">
+        {% block body %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light py-3">
+        <div class="container text-center">
+            &copy; 2025 Joel Onyango - All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies (jQuery, Popper.js) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

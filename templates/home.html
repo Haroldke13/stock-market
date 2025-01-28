@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %} Stock Market Trend Prediction {% endblock %}
+
+{% block body %}
+
+<div class="container text-center my-5">
+    <h3 class="display-4 mb-4">Welcome to the  Stock Market Prediction App</h3>
+    <p class="lead">
+        This Flask-based web application predicts stock market data by importing variables from Yahoo Finance.
+        You can upload CSV files containing stock ticker symbols to receive stock market predictions based on the uploaded data.
+        The app also displays the prediction results in tables and interactive graphs for better data visualization.
+    </p>
+    
+    <hr class="my-4">
+
+    <h3 class="mt-5">Features:</h3>
+    <ul class="list-group text-left mx-auto" style="max-width: 600px; color: black;">
+        <li class="list-group-item">🔼 Upload a CSV file containing stock ticker symbols.</li>
+        <li class="list-group-item">📈 Predict stock market trends based on the data from Yahoo Finance.</li>
+        <li class="list-group-item">📊 View prediction results in an interactive table.</li>
+        <li class="list-group-item">📉 Display prediction results as graphs using Plotly for enhanced data visualization.</li>
+    </ul>
+
+    <div class="mt-5"
+        <h4>How It Works:</h4>
+        <p>
+            -  Step 1 : Upload a CSV file containing stock data or enter a stock ticker symbol.
+            <br>
+            -  Step 2 : The app will automatically analyze the stock data and predict future trends.
+            <br>
+            -  Step 3 : You’ll be able to view the prediction results in an interactive table and graph.
+        </p>
+    </div>
+
+    <div class="mt-5">
+        <h4>Start Predicting Now!</h4>
+        <p>Click below to get started with uploading your stock data and generating predictions:</p>
+        <a href="/yfinance" class="btn btn-primary btn-lg">Upload Your Data</a>
+    </div>
+</div>
+
+{% endblock %}
