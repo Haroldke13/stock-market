@@ -1,4 +1,6 @@
 import numpy as np
+from pathlib import Path
+from werkzeug.utils import secure_filename
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
@@ -10,7 +12,12 @@ import logging
 
 # Initialize Flask app
 app = Flask(__name__)
-app.secret_key = 'REMOVED_SECRET_KEY_SEE_ENV'
+app.secret_key = os.environ.get('SECRET_KEY')
+if not app.secret_key:
+    raise RuntimeError(
+        "SECRET_KEY is not set. Copy .env.example to .env and provide a value "
+        "before starting the app."
+    )
 
 # Enable logging for debugging
 #logging.basicConfig(level=logging.DEBUG)
@@ -42,9 +49,13 @@ def yfinance_route():
             # Reset index to make Date a column
             stock_data.reset_index(inplace=True)
 
-            # Save stock data to a CSV file in the root directory or static directory
-            csv_filename = f"{stock_symbol}_stock_data.csv"
-            csv_filepath = os.path.join(os.getcwd(), csv_filename)
+            # Save stock data to a CSV file inside the sandboxed download folder.
+            # stock_symbol is user input, so the derived name is validated the
+            # same way as a download before anything is written to disk.
+            csv_filename = f"{secure_filename(stock_symbol)}_stock_data.csv"
+            csv_filepath = (DOWNLOAD_FOLDER / csv_filename).resolve()
+            if not csv_filepath.is_relative_to(DOWNLOAD_FOLDER):
+                return render_template('yfinance.html', error="Invalid stock symbol.", stock_symbol=stock_symbol)
             stock_data.to_csv(csv_filepath, index=False)
             print(f"File saved at: {csv_filepath}")  # Debugging
 
@@ -70,8 +81,11 @@ def yfinance_route():
 # Route to download CSV file
 @app.route('/download_csv1/<filename>')
 def download_csv1(filename):
-    """Allow the user to download the CSV file."""
-    return send_from_directory(os.getcwd(), filename, as_attachment=True)
+    """Allow the user to download the CSV file (restricted to DOWNLOAD_FOLDER)."""
+    file_path = resolve_in_download_folder(filename)
+    if file_path is None:
+        return "File not found.", 404
+    return send_file(file_path, as_attachment=True)
 
 
 import os
@@ -92,8 +106,10 @@ def analyze_data():
         return render_template('yfinance.html', error="No CSV file selected for analysis.")
     
     try:
-        # Read the CSV file
-        csv_filepath = os.path.join(os.getcwd(), csv_filename)
+        # Read the CSV file (confined to DOWNLOAD_FOLDER - the name is user input)
+        csv_filepath = resolve_in_download_folder(csv_filename)
+        if csv_filepath is None:
+            return render_template('yfinance.html', error="CSV file not found.")
         stock_data = pd.read_csv(csv_filepath)
         
         # Validate columns in the uploaded CSV (like Date, Close)
@@ -227,8 +243,39 @@ from sklearn.metrics import mean_squared_error
 import os
 from flask import send_file
 
-UPLOAD_FOLDER = os.path.abspath(os.getcwd())
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the folder exists
+# --- Security: confine every user-supplied file name to one explicit directory ---
+# UPLOAD_FOLDER used to be the process working directory, so a request such as
+# /download_csv/../../etc/passwd (or even /download_csv/app.py) would hand the
+# caller any file the process could read.  Uploads and downloads now share one
+# dedicated sandbox directory that is resolved once, at import time.
+DOWNLOAD_FOLDER = (Path(__file__).resolve().parent / "downloads").resolve()
+DOWNLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+
+UPLOAD_FOLDER = str(DOWNLOAD_FOLDER)  # uploads land in the same sandbox
+
+
+def resolve_in_download_folder(filename):
+    """Resolve `filename` inside DOWNLOAD_FOLDER, or return None if it escapes.
+
+    The name arrives straight from the URL / form, so it may contain traversal
+    sequences, an absolute path, or point at a symlink aimed outside the folder.
+    We therefore join first and *resolve* second, then check the fully
+    normalised result with Path.is_relative_to against the real download root.
+    Textually stripping ".." would not be enough: it misses absolute paths,
+    encoded variants, and symlinks that resolve outside the directory.
+    Callers turn a None into a 404 so nothing about the filesystem leaks.
+    """
+    if not filename:
+        return None
+    try:
+        candidate = (DOWNLOAD_FOLDER / filename).resolve()
+    except (OSError, ValueError):
+        return None
+    if not candidate.is_relative_to(DOWNLOAD_FOLDER):
+        return None
+    if not candidate.is_file():
+        return None
+    return candidate
 import plotly.graph_objects as go
 import json
 import plotly
@@ -252,7 +299,10 @@ def stock_market_prediction():
         try:
             if uploaded_file:
                 # Handle uploaded CSV file
-                csv_filename = os.path.join(UPLOAD_FOLDER, uploaded_file.filename)
+                # secure_filename strips any directory component from the
+                # browser-supplied name so an upload cannot be written outside
+                # UPLOAD_FOLDER.
+                csv_filename = os.path.join(UPLOAD_FOLDER, secure_filename(uploaded_file.filename))
                 uploaded_file.save(csv_filename)
                 stock_data = pd.read_csv(csv_filename)
 
@@ -290,7 +340,7 @@ def stock_market_prediction():
                     )
 
                 # Save downloaded data as a CSV
-                csv_filename = os.path.join(UPLOAD_FOLDER, f"{stock_symbol}_data.csv")
+                csv_filename = os.path.join(UPLOAD_FOLDER, f"{secure_filename(stock_symbol)}_data.csv")
                 stock_data.to_csv(csv_filename)
 
             # Ensure valid datetime index and frequency
@@ -430,12 +480,12 @@ def stock_market_prediction():
 
 @app.route('/download_csv/<filename>')
 def download_csv(filename):
-    """Serve CSV files for download."""
-    file_path = os.path.join(UPLOAD_FOLDER, filename)
-    if os.path.exists(file_path):
-        return send_file(file_path, as_attachment=True)
-    else:
+    """Serve CSV files for download, restricted to DOWNLOAD_FOLDER."""
+    file_path = resolve_in_download_folder(filename)
+    if file_path is None:
+        # Escaped the sandbox, or simply does not exist - same answer either way.
         return "File not found.", 404
+    return send_file(file_path, as_attachment=True)
 
 
 if __name__ == '__main__':
