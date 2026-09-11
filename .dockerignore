@@ -1,0 +1,32 @@
+# VCS
+.git
+.gitignore
+.github
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Secrets — never bake these into an image
+.env
+.env.*
+*.pem
+*.key
+
+# Data the app generates at runtime (belongs in the /data volume, not the image)
+*.csv
+
+# Local noise
+.DS_Store
+*.swp
+.idea/
+.vscode/
+Dockerfile
+.dockerignore
+DEPLOY.md
